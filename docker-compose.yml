@@ -1,17 +1,37 @@
 ﻿version: "3.9"
 
 services:
-  sqlserver:
+  db:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: Database
+    container_name: ordem-servico-sql
     environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Your_password123"
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Your_strong_Passw0rd!
     ports:
       - "1433:1433"
     volumes:
-      - sqlserver_data:/var/opt/mssql
-    restart: always
+      - mssqldata:/var/opt/mssql
+    networks:
+      - ordem-net
+
+  api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: ordem-servico-api
+    depends_on:
+      - db
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=OrdemServicoDb;User Id=sa;Password=Your_strong_Passw0rd!;TrustServerCertificate=True;
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8080:8080"
+    networks:
+      - ordem-net
 
 volumes:
-  sqlserver_data:
+  mssqldata:
+
+networks:
+  ordem-net:
+    driver: bridge

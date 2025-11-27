@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ordem_servico_backend.Models;
 using ordem_servico_backend.Repositories.DatabaseContext;
@@ -16,6 +17,7 @@ namespace ordem_servico_backend.Controllers
         public TasksController(ITaskService taskService) => _taskService = taskService;
 
         [HttpGet]
+        [Authorize(Roles = "admin,tecnico")]
         public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
         {
             var tasks = await _taskService.GetAllAsync();
@@ -23,6 +25,7 @@ namespace ordem_servico_backend.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<TaskItem>> GetTask(int id)
         {
             var task = await _taskService.GetByIdAsync(id);
@@ -31,6 +34,7 @@ namespace ordem_servico_backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<TaskItem>> CreateTask([FromBody] TaskItem task)
         {
             var created = await _taskService.CreateAsync(task);
@@ -38,6 +42,7 @@ namespace ordem_servico_backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<TaskItem>> UpdateTask(int id, [FromBody] TaskItem task)
         {
             var updated = await _taskService.UpdateAsync(id, task);
@@ -46,6 +51,7 @@ namespace ordem_servico_backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteTask(int id)
         {
             var ok = await _taskService.DeleteAsync(id);

@@ -68,6 +68,7 @@ namespace ordem_servico_backend.Services.Implementation
             var order = await _orderRepo.GetByIdWithDetailsAsync(id);
             if (order == null) return null;
 
+            order.ObservacoesTecnico = dto.ObservacoesTecnico;
             order.TarefasConcluidas ??= new List<OrderTasksCompleted>();
             order.TarefasConcluidas.Clear();
 

@@ -5,5 +5,6 @@
         public List<string> TarefasConcluidasIds { get; set; } = new();
         public List<string> Fotos { get; set; } = new();
         public int QtdFotos { get; set; }
+        public string? ObservacoesTecnico { get; set; }
     }
 }

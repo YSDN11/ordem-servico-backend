@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ordem_servico_backend.Models;
 using ordem_servico_backend.Services.Implementation;
@@ -26,6 +27,7 @@ namespace ordem_servico_backend.Controllers
         }
 
         [HttpPost("register")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
             var user = new AppUser
@@ -39,6 +41,9 @@ namespace ordem_servico_backend.Controllers
             {
                 return BadRequest(result.Errors);
             }
+
+            var role = dto.Role?.ToLower() == "admin" ? "admin" : "tecnico";
+            await _userManager.AddToRoleAsync(user, role);
 
             return Ok(new { message = "Usuário registrado com sucesso." });
         }
@@ -57,18 +62,9 @@ namespace ordem_servico_backend.Controllers
             if (!result.Succeeded)
                 return Unauthorized(new { message = "Credenciais inválidas." });
 
-            var token = _jwtService.GenerateToken(user);
+            var token = await _jwtService.GenerateTokenAsync(user);
 
-            return Ok(new
-            {
-                token,
-                user = new
-                {
-                    id = user.Id,
-                    userName = user.UserName,
-                    email = user.Email
-                }
-            });
+            return Ok(new { token });
         }
     }
 }

@@ -75,7 +75,6 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -93,6 +92,16 @@ using (var scope = app.Services.CreateScope())
     identityDb.Database.Migrate();
 
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
+
+    string[] roles = { "admin", "tecnico" };
+    foreach (var roleName in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole<int>(roleName));
+        }
+    }
 
     const string adminUserName = "admin";
     const string adminEmail = "admin@local";
@@ -113,6 +122,14 @@ using (var scope = app.Services.CreateScope())
         {
             throw new Exception("Falha ao criar usuário admin: " +
                 string.Join(", ", createResult.Errors.Select(e => e.Description)));
+        }
+        await userManager.AddToRoleAsync(adminUser, "admin");
+    }
+    else
+    {
+        if (!await userManager.IsInRoleAsync(existingAdmin, "admin"))
+        {
+            await userManager.AddToRoleAsync(existingAdmin, "admin");
         }
     }
 
