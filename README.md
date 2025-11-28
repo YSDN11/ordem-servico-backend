@@ -21,5 +21,10 @@ https://github.com/SEU-USUARIO/ordem-servico-backend.git
 cd ordem-servico-backend/ordem-servico-backend
  
 2. Rode o comando: docker compose up --build
+
+Por padrão, a API ja criará um usuário admin para acessar a aplicação.
+User: admin
+Pass: admin@123
+
 3. A Api irá rodar automaticamente em: http://localhost:8080
 4. Consulte a documentação da API em: http://localhost:8080/swagger/index.html
