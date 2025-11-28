@@ -6,7 +6,7 @@ Aplicação web para gestão de ordens de serviço, com backend em ASP.NET Core.
 
 ## ✅ Pré-requisitos
 
-- [.NET SDK 8.0+](https://dotnet.microsoft.com/download)
+- [.NET SDK 10.0+](https://dotnet.microsoft.com/download)
 - [SQL Server](https://www.microsoft.com/sql-server) local ou em container
 - [Docker Desktop](https://www.docker.com/get-started/)
 - Git instalado
